@@ -1,0 +1,46 @@
+#!/bin/sh
+#
+#
+
+DEVICE=$(xinput list | grep TouchPad | sed -e 's/^.*id=\([0-9]*\).*$/\1/')
+ENABLED=$(xinput list-props $DEVICE | grep "Device Enabled" | cut -f2 -d:)
+
+function touchpad_off() {
+  xinput set-prop $1 "Device Enabled" 0
+}
+
+function touchpad_on() {
+  xinput set-prop $1 "Device Enabled" 1
+}
+
+case $(basename -- "$0") in
+  toggle-touchpad)
+    case $ENABLED in
+      *0)
+	touchpad_on $DEVICE
+	;;
+      *1)
+	touchpad_off $DEVICE
+	;;
+      *)
+	echo Unknown device state: "$ENABLED"
+	exit 1
+	;;
+    esac
+    ;;
+  touchpad)
+    case "$1" in
+      off|disable)
+	touchpad_off $DEVICE
+	;;
+      on|enable)
+	touchpad_on $DEVICE
+	;;
+      *)
+	xinput list-props $DEVICE | grep "Device Enabled"
+	;;
+    esac
+    ;;
+esac
+
+
