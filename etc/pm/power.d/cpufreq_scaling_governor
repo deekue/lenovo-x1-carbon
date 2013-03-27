@@ -1,0 +1,21 @@
+#!/bin/sh
+
+scaling_governor() {
+    for cpu in /sys/devices/system/cpu/cpu[0-9]*; do
+	echo "$1" > $cpu/cpufreq/scaling_governor
+    done
+}
+
+case "$1" in
+    true)
+	echo "**sched policy powersave ON"
+	scaling_governor powersave
+	;;
+    false)
+	echo "**sched policy powersave OFF"
+	scaling_governor performance
+	;;
+    *) exit $NA ;;
+esac
+
+exit 0

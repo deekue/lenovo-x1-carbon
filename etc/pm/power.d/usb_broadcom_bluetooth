@@ -1,0 +1,46 @@
+#!/bin/sh
+
+#
+# This script adjusts the USB bluetooth device settings via the USB
+# power control.  This simply sets this to "auto" for power saving and to "on"
+# for non-power saving.   This has been shown to save about 1W on some
+# systems.
+#
+# According to http://www.usb.org/developers/defined_class
+#   USB wireless bluetooth devices have baseclass 0xe0, subclass 0x01,
+#   protocol 0x01
+#
+# However the Broadcom BCM20702A0 Bluetooth 4.0 device uses baseclass 0xff, 
+# which is 'Vendor specific'.  So we identify it by idProduct/idVendor
+
+
+USB_BLUETOOTH_PM_ENABLE="${USB_BLUETOOTH_PM_ENABLE:-true}"
+
+set_usb_bluetooth()
+{
+	for dev in /sys/bus/usb/devices/* ; do
+		if [ -e $dev/idVendor -a \
+		     -e $dev/idProduct -a \
+		     -e $dev/power/control ]; then
+			if [ x`cat $dev/idVendor` = x0a5c -a \
+		     	x`cat $dev/idProduct` = x21e6 ]; then
+				echo Setting $dev to $1
+				echo $1 > $dev/power/control
+			fi
+		fi
+	done
+}
+
+case "$1" in
+	true) # powersaving on
+		[ "$USB_BLUETOOTH_PM_ENABLE" = true ] && set_usb_bluetooth "auto"
+		;;
+	false) # powersaving off
+		[ "$USB_BLUETOOTH_PM_ENABLE" = true ] && set_usb_bluetooth "on"
+		;;
+	*)
+		exit 254
+		;;
+esac
+
+exit 0

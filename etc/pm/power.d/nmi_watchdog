@@ -1,0 +1,13 @@
+#!/bin/sh
+
+NMI_WATCHDOG=/proc/sys/kernel/nmi_watchdog
+
+[ -w "$NMI_WATCHDOG" ] || exit $NA
+
+case $1 in
+    true)  echo 0 > $NMI_WATCHDOG;;
+    false) echo 1 > $NMI_WATCHDOG;;
+    *) exit $NA;;
+esac
+
+exit 0

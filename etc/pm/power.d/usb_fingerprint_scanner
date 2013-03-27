@@ -1,0 +1,39 @@
+#!/bin/sh
+
+# Set the fingerprint scanner to power saving at all times.
+# It's completely insecure and shouldn't be used.
+# USB ids from:
+# http://www.thinkwiki.org/wiki/Integrated_Fingerprint_Reader
+
+set_usb_fps()
+{
+  for dev in /sys/bus/usb/devices/* ; do
+    if [ -e $dev/idVendor -a \
+         -e $dev/idProduct -a \
+         -e $dev/power/control ]; then
+      VendorProduct="`cat $dev/idVendor`:`cat $dev/idProduct`"
+      if [ x$VendorProduct = "x0483:2016" -o \
+           x$VendorProduct = "x147e:1000" -o \
+           x$VendorProduct = "x147e:1002" -o \
+           x$VendorProduct = "x147e:2016" -o \
+           x$VendorProduct = "x147e:2020" -o \
+           x$VendorProduct = "x08ff:1600" -o \
+           x$VendorProduct = "x08ff:2580" -o \
+           x$VendorProduct = "x08ff:2810" ]; then
+        echo Setting $dev to $1
+        echo $1 > $dev/power/control
+      fi
+    fi
+  done
+}
+
+case "$1" in
+  true|false) # powersaving on always
+    set_usb_fps "auto"
+    ;;
+  *)
+    exit 254
+    ;;
+esac
+
+exit 0
