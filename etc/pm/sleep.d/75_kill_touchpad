@@ -1,0 +1,23 @@
+#!/bin/sh
+#
+# Kill the touchpad
+
+[ "x$KILL_TOUCHPAD" = "xtrue" ] || exit 0
+
+# If running as root from ACPI or udev, switch to the X11 user.
+X_USER=$(who | sed -n '/:[0-9]\W/{s/ .*//p;q}')
+if [ "$X_USER" ] && [ "$LOGNAME" != "$X_USER" ]; then
+    exec su "$X_USER" -c "$0 $*"
+fi
+
+if [ ! "$DISPLAY" ]; then
+    export DISPLAY="$(who | sed -n '/:[0-9]\W/{s/.*(\([^)]*\))/\1/p;q}')"
+fi
+
+case "$1" in
+  thaw|resume)
+    /usr/local/bin/touchpad off
+    ;;
+  *)
+    ;;
+esac
