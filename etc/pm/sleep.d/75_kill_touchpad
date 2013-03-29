@@ -2,8 +2,6 @@
 #
 # Kill the touchpad
 
-[ "x$KILL_TOUCHPAD" = "xtrue" ] || exit 0
-
 # If running as root from ACPI or udev, switch to the X11 user.
 X_USER=$(who | sed -n '/:[0-9]\W/{s/ .*//p;q}')
 if [ "$X_USER" ] && [ "$LOGNAME" != "$X_USER" ]; then

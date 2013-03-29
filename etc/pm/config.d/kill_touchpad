@@ -1,2 +1,0 @@
-# disable the touchpad after suspend/resume
-KILL_TOUCHPAD=true
