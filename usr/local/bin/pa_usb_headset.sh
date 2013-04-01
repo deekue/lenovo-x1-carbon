@@ -25,5 +25,7 @@ if [ -z "$DEVICE" ] ; then
   [ -z "$DEVICE" ] && exit 0 # not a USB device, giving up
 fi
 
-/usr/bin/pacmd set-default-source alsa_input.$DEVICE  > /dev/null
-/usr/bin/pacmd set-default-sink   alsa_output.$DEVICE > /dev/null
+/usr/bin/pacmd set-default-source alsa_input.$DEVICE    > /dev/null
+/usr/bin/pacmd suspend-source     alsa_input.$DEVICE 0  > /dev/null
+/usr/bin/pacmd set-default-sink   alsa_output.$DEVICE   > /dev/null
+/usr/bin/pacmd suspend-sink       alsa_output.$DEVICE 0 > /dev/null
