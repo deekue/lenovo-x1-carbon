@@ -1,0 +1,4 @@
+# set a newly connected USB device to be the default sink/source in PulseAudio
+# we trigger on change as it should be the last event after the new device is
+# added
+ACTION=="change", SUBSYSTEM=="sound", RUN+="/usr/local/bin/pa_usb_headset.sh %S%b"
