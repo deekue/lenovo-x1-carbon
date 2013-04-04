@@ -1,0 +1,17 @@
+#!/bin/sh
+#
+# put drive-sync to sleep while we're on battery
+# this isn't pretty but it works
+
+BIN=/opt/google/drive/drive-sync
+
+[ -x "$BIN" ] || exit $NA
+
+case $1 in
+    true)  pgrep drive-sync | xargs kill -STOP;;
+    false) pgrep drive-sync | xargs kill -CONT;;
+    *) exit $NA;;
+esac
+
+exit 0
+
