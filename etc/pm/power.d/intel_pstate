@@ -1,0 +1,19 @@
+#!/bin/sh
+# see b/11895629
+
+# relies on intel_pstate=enabled in /etc/default/grub
+grep -q intel_pstate=enable /proc/cmdline || exit $NA
+
+GOVERNOR="/sys/devices/system/cpu/cpu*/cpufreq/scaling_governor"
+
+for f in $GOVERNOR ; do
+  [ -w $f ] || exit $NA
+done
+
+case $1 in
+    true)  echo powersave | tee $GOVERNOR;;
+    false) echo performance | tee $GOVERNOR;;
+    *) exit $NA;;
+esac
+
+exit 0
