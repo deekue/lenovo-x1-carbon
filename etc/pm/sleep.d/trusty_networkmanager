@@ -1,0 +1,13 @@
+#! /bin/sh
+
+# NetworkManager gets hung up after suspend on Trusty
+# till I work out why just shoot it in the face
+
+case $1 in
+     suspend|suspend_hybrid|hibernate)
+        ;;
+     resume|thaw)
+	pkill NetworkManager
+	pkill wpa_supplicant
+        ;;
+esac
