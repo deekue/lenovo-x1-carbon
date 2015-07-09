@@ -4,10 +4,13 @@
 # till I work out why just shoot it in the face
 
 case $1 in
-     suspend|suspend_hybrid|hibernate)
+  suspend|suspend_hybrid|hibernate)
         ;;
-     resume|thaw)
-	pkill NetworkManager
-	pkill wpa_supplicant
+  resume|thaw)
+    # seems to get stuck in sleep sometimes
+    nmcli nm sleep false
+    # nuke it from orbit
+    #pkill NetworkManager
+    #pkill wpa_supplicant
         ;;
 esac
