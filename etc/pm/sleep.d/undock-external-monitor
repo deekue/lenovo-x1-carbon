@@ -1,0 +1,12 @@
+#! /bin/sh
+
+# X11 crashes if the dock is removed while an external monitor is active
+# use xrandr to disable the external monitor before sleeping
+
+case $1 in
+  suspend|suspend_hybrid|hibernate)
+    /usr/bin/xrandr --output DP2-1 --off
+    ;;
+  resume|thaw)
+    ;;
+esac
