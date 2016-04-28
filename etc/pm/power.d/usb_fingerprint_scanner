@@ -5,6 +5,9 @@
 # USB ids from:
 # http://www.thinkwiki.org/wiki/Integrated_Fingerprint_Reader
 
+# 2015/Gen3 X1 Carbon has a different fingerprint reader
+#Bus 001 Device 002: ID 138a:0017 Validity Sensors, Inc. Fingerprint Reader
+
 set_usb_fps()
 {
   for dev in /sys/bus/usb/devices/* ; do
@@ -19,6 +22,7 @@ set_usb_fps()
            x$VendorProduct = "x147e:2020" -o \
            x$VendorProduct = "x08ff:1600" -o \
            x$VendorProduct = "x08ff:2580" -o \
+           x$VendorProduct = "x138a:0017" -o \
            x$VendorProduct = "x08ff:2810" ]; then
         echo Setting $dev to $1
         echo $1 > $dev/power/control
