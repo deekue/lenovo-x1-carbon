@@ -1,0 +1,10 @@
+# Disable the USB sound card on the Lenovo USB3 Dock
+#
+# having two USB audio devices on the same USB hub causes problems with older
+# linux kernels (second one fails with "not enough bandwidth")
+#
+# I have a DAC at home I'd rather use than the one in this dock.
+# 
+
+# from: https://unix.stackexchange.com/questions/105694/how-to-disable-a-usb-sound-device-with-udev
+#ACTION=="add", ATTRS{idVendor}=="17e9", ATTRS{idProduct}=="4302", DRIVER=="snd-usb-audio", RUN+="/bin/sh -c 'echo 0 > /sys/\$devpath/authorized'"
