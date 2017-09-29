@@ -1,0 +1,7 @@
+# Set no_turbo in the intel_pstate driver on the x1v3, to solve the
+# overheat-and-crash issue.
+#
+# via:
+# http://penningpence.blogspot.com/2016/12/strange-wi-fi-and-overheating-issues.html?view=flipcard
+
+KERNEL=="cpu",RUN+="/bin/sh -c 'echo -n 1 > /sys/devices/system/cpu/intel_pstate/no_turbo'"
