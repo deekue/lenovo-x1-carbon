@@ -1,17 +1,21 @@
 #!/bin/sh
+# since 3.9 intel_pstate supports two governors, powersave and performance
+# per https://wiki.archlinux.org/index.php/CPU_frequency_scaling
 
 # relies on intel_pstate
 [ -d /sys/devices/system/cpu/intel_pstate ] || exit $NA
 
 GOVERNOR="/sys/devices/system/cpu/cpu*/cpufreq/scaling_governor"
 
-for f in $GOVERNOR ; do
-  [ -w $f ] || exit $NA
-done
+set_governor() {
+  for f in $GOVERNOR ; do
+    echo $1 > $f
+  done
+}
 
 case $1 in
-    true)  echo powersave | tee $GOVERNOR;;
-    false) echo ondemand | tee $GOVERNOR;;
+    true)  set_governor powersave ;;
+    false) set_governor performance ;;
     *) exit $NA;;
 esac
 
