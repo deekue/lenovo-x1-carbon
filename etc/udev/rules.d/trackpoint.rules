@@ -1,0 +1,2 @@
+# set speed/sensitivity for the Trackpoint
+#KERNEL=="serio2", SUBSYSTEM=="serio", DRIVER=="psmouse", ATTR{sensitivity}="255", ATTR{speed}="255"

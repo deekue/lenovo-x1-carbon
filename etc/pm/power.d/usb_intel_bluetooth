@@ -10,25 +10,24 @@
 #   USB wireless bluetooth devices have baseclass 0xe0, subclass 0x01,
 #   protocol 0x01
 #
-# However the Broadcom BCM20702A0 Bluetooth 4.0 device uses baseclass 0xff, 
-# which is 'Vendor specific'.  So we identify it by idProduct/idVendor
+# However this Intel Bluetooth 4.0 device uses baseclass 0xff, 
+# which is 'Vendor specific'.  So we identify it by USB idProduct/idVendor
 
 
 USB_BLUETOOTH_PM_ENABLE="${USB_BLUETOOTH_PM_ENABLE:-true}"
 
 set_usb_bluetooth()
 {
-	for dev in /sys/bus/usb/devices/* ; do
-		if [ -e $dev/idVendor -a \
-		     -e $dev/idProduct -a \
-		     -e $dev/power/control ]; then
-			if [ x`cat $dev/idVendor` = x0a5c -a \
-		     	x`cat $dev/idProduct` = x21e6 ]; then
-				echo Setting $dev to $1
-				echo $1 > $dev/power/control
-			fi
-		fi
-	done
+  USB_ID=8087:0a2b
+  sysfs_path="$(dirname $(grep -l ${USB_ID%%:*} /sys/bus/usb/devices/*/idVendor | xargs dirname | xargs -i grep -l ${USB_ID##*:} {}/idProduct))"
+
+  if [ -n "$sysfs_path" -a -d "$sysfs_path" ] ; then
+    echo Setting $sysfs_path to $1
+    echo $1 > $sysfs_path/power/control
+  else
+    exit 254
+  fi
+
 }
 
 case "$1" in

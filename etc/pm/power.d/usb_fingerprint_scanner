@@ -5,26 +5,18 @@
 # USB ids from:
 # http://www.thinkwiki.org/wiki/Integrated_Fingerprint_Reader
 
+FP_SCANNER_ID=138a:0097
+
 set_usb_fps()
 {
-  for dev in /sys/bus/usb/devices/* ; do
-    if [ -e $dev/idVendor -a \
-         -e $dev/idProduct -a \
-         -e $dev/power/control ]; then
-      VendorProduct="`cat $dev/idVendor`:`cat $dev/idProduct`"
-      if [ x$VendorProduct = "x0483:2016" -o \
-           x$VendorProduct = "x147e:1000" -o \
-           x$VendorProduct = "x147e:1002" -o \
-           x$VendorProduct = "x147e:2016" -o \
-           x$VendorProduct = "x147e:2020" -o \
-           x$VendorProduct = "x08ff:1600" -o \
-           x$VendorProduct = "x08ff:2580" -o \
-           x$VendorProduct = "x08ff:2810" ]; then
-        echo Setting $dev to $1
-        echo $1 > $dev/power/control
-      fi
-    fi
-  done
+  sysfs_path="$(dirname $(grep -l ${FP_SCANNER_ID%%:*} /sys/bus/usb/devices/*/idVendor | xargs dirname | xargs -i grep -l ${FP_SCANNER_ID##*:} {}/idProduct))"
+
+  if [ -n "$sysfs_path" -a -d "$sysfs_path" ] ; then
+    echo Setting $sysfs_path to $1
+    echo $1 > $sysfs_path/power/control
+  else
+    exit 254
+  fi
 }
 
 case "$1" in
