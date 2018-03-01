@@ -5,17 +5,18 @@
 # relies on intel_pstate
 [ -d /sys/devices/system/cpu/intel_pstate ] || exit $NA
 
+NO_TURBO_BATTERY=true
 GOVERNOR="/sys/devices/system/cpu/cpu*/cpufreq/scaling_governor"
 
-set_governor() {
-  for f in $GOVERNOR ; do
-    echo $1 > $f
-  done
-}
-
 case $1 in
-    true)  set_governor powersave ;;
-    false) set_governor performance ;;
+    true) 
+      echo powersave | tee $GOVERNOR
+      echo 1 > /sys/devices/system/cpu/intel_pstate/no_turbo
+      ;;
+    false)
+      echo performance | tee $GOVERNOR
+      echo 0 > /sys/devices/system/cpu/intel_pstate/no_turbo
+      ;;
     *) exit $NA;;
 esac
 
