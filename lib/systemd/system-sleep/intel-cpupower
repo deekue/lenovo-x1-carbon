@@ -1,0 +1,22 @@
+#!/bin/sh
+
+# From Lei:
+# > I found the BIOS resets the MSR I'm modifying when resuming from suspend
+# > 
+# > The specs on the CPU says it's configurable from 7.5W to 15W (nominal) to 25W. 
+# > https://www.intel.com/content/dam/www/public/us/en/documents/manuals/64-ia-32-architectures-software-developer-vol-3b-part-2-manual.pdf#page=35
+# >
+# > I also looked at the Skylake coreboot code, and double checked the
+# > values after setting them by reading them out with turbostat from the
+# > linux-cpupower package.
+
+
+[ -x /usr/sbin/wrmsr ] || exit 1
+grep -q 'Intel(R) Core(TM) i7-7600U CPU' /proc/cpuinfo || exit 1
+
+case $1 in
+  post)
+    # 15W + 18.5W bursts
+    /usr/sbin/wrmsr -a 0x610 0x15809600dd8078
+    ;;
+esac

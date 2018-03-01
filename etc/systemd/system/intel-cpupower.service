@@ -1,0 +1,10 @@
+[Unit]
+Description=Set Intel CPU power profile
+
+[Service]
+Type=oneshot
+ExecStart=/lib/systemd/system-sleep/intel-cpupower post
+StandardOutput=journal
+
+[Install]
+WantedBy=multi-user.target
